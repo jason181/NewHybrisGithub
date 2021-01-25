@@ -1,0 +1,22 @@
+# -----------------------------------------------------------------------
+# Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
+# -----------------------------------------------------------------------
+# ImpEx for Importing Prices
+
+# Macros / Replacement Parameter definitions
+$productCatalog = trainingProductCatalog
+
+$catalogVersion = catalogversion(catalog(id[default=$productCatalog]), version[default='Staged'])[unique=true, default='$productCatalog:Staged']
+
+# Set product approval status to Approved only for those products that have prices.
+$approved = approvalstatus(code)[default='approved']
+
+INSERT_UPDATE PriceRow; product(code, $catalogVersion)[unique = true]; price[translator = de.hybris.platform.acceleratorservices.dataimport.batch.converter.PriceTranslator]; currency(isocode)[unique = true][default = IDR]; $catalogVersion; unit(code[unique = true, default = pieces])
+                      ; PB-SHIRT-1                                   ; 120000                                                                                               ;                                                ;                ;
+                      ; PB-SHIRT-2                                   ; 100000                                                                                               ;                                                ;                ;
+                      ; CV-S1                                        ; 200000                                                                                               ;                                                ;                ;
+                      ; CV-S2                                        ; 210000                                                                                               ;                                                ;                ;
+                      ; HURLEY-T-1                                   ; 150000                                                                                               ;                                                ;                ;
+                      ; HURLEY-T-2                                   ; 110000                                                                                               ;                                                ;                ;
+                      ; COLE-T-1                                     ; 300000                                                                                               ;                                                ;                ;
+

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:file="http://www.springframework.org/schema/integration/file"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/integration/file
+            http://www.springframework.org/schema/integration/file/spring-integration-file.xsd">
+
+    <context:annotation-config />
+    <bean id="baseDirectoryTraining" class="java.lang.String">
+        <constructor-arg value="#{baseDirectory}/${tenantId}/training"/>
+    </bean>
+
+    <file:inbound-channel-adapter id="batchFilesTraining" directory="#{baseDirectoryTraining}"
+        comparator="fileOrderComparator" filename-regex="^([training].*)-(\d+)\.csv">
+        <int:poller fixed-rate="1000"/>
+    </file:inbound-channel-adapter>
+
+    <file:outbound-gateway request-channel="batchFilesTraining" reply-channel="batchFilesTrainingProc"
+        directory="#{baseDirectoryTraining}/processing" delete-source-files="true"/>
+    <int:service-activator input-channel="batchFilesTrainingProc" output-channel="batchFilesHeaderInit"
+        ref="trainingHeaderSetupTask" method="execute"/>
+    <!--Register header setup task-->
+    <bean id="trainingHeaderSetupTask" class="org.training.core.tasks.TrainingHeaderTask">
+        <!--Just a place holder value for property catalog.. this will be delivered dynamically runtime-->
+        <property name="catalog" value="volatileCatalog"/>
+        <property name="net" value="false"/>
+        <property name="storeBaseDirectory" value="baseDirectoryTraining"/>
+    </bean>
+    <!--Register impex runner task-->
+    <bean id="batchRunnerTask" class="org.training.core.tasks.TrainingAbstractImpexRunnerTask">
+        <property name="sessionService" ref="sessionService"/>
+        <property name="importService" ref="importService"/>
+        <lookup-method name="getImportConfig" bean="importConfig"/>
+    </bean>
+    <!--Register transformer task-->
+    <bean id="batchTransformerTask" class="org.training.core.tasks.TrainingImpexTransformerTask" init-method="initConvertersMap">
+        <property name="fieldSeparator" value=";"/>
+        <property name="encoding" value="UTF-8"/>
+        <property name="linesToSkip" value="1"/>
+        <property name="cleanupHelper" ref="cleanupHelper"/>
+    </bean>
+    <bean id="batchTrainingProductConverterMapping"
+        class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
+        p:mapping="training-product"
+        p:converter-ref="batchTrainingProductConverter"/>
+    <alias name="trainingFileOrderComparator" alias="fileOrderComparator"/>
+    <bean id="trainingFileOrderComparator" class="de.hybris.platform.acceleratorservices.dataimport.batch.FileOrderComparator">
+        <property name="prefixPriority">
+            <map>
+                <entry key="training-product" value="100"/>
+            </map>
+        </property>
+    </bean>
+    <bean id="batchTrainingProductConverter" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter">
+        <property name="header">
+            <value>#{defaultImpexProductHeader}
+                $supercategories=supercategories(code,$catalogVersion)
+                $lang=en
+                $langid=id
+                $variantType=TrainingVariantProduct
+                INSERT_UPDATE TrainingProduct;code[unique=true];name[lang=$lang];name[lang=$langid];$supercategories;varianttype(code);unit(code)[default=pieces];approvalstatus(code)[default='approved'];$catalogVersion
+            </value>
+        </property>
+        <property name="impexRow">
+            <value>;{+0};{+1};{+1};{+2};$variantType;</value>
+        </property>
+    </bean>
+</beans>

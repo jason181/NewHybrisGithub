@@ -31,6 +31,12 @@
             <value code="INWAREHOUSE"/>
             <value code="SOLDOUT"/>
         </enumtype>
+
+        <enumtype generate="true" code="ManagerApproval" autocreate="true" dynamic="true">
+            <value code="APPROVED"/>
+            <value code="REJECTED"/>
+        </enumtype>
+
     </enumtypes>
 
     <itemtypes>
@@ -115,9 +121,9 @@
                 <attributes>
                     <attribute qualifier="searchable" type="java.lang.Boolean">
                         <description>Is searchable Product</description>
-                        <modifiers />
+                        <modifiers/>
                         <defaultvalue>Boolean.valueOf(true)</defaultvalue>
-                        <persistence type="property" />
+                        <persistence type="property"/>
                     </attribute>
                 </attributes>
             </itemtype>
@@ -126,25 +132,31 @@
                 <attributes>
                     <attribute type="java.lang.String" qualifier="sku">
                         <description>SKU Product</description>
-                        <modifiers optional="true" initial="true" />
-                        <persistence type="property" />
+                        <modifiers optional="true" initial="true"/>
+                        <persistence type="property"/>
                     </attribute>
                     <attribute type="java.lang.String" qualifier="material">
                         <description>Material Product</description>
-                        <modifiers optional="true" initial="true" />
-                        <persistence type="property" />
+                        <modifiers optional="true" initial="true"/>
+                        <persistence type="property"/>
                     </attribute>
                     <attribute qualifier="activeStatus" type="ActiveStatus">
                         <description>Active Status Product</description>
-                        <modifiers />
+                        <modifiers/>
                         <defaultvalue>em().getEnumerationValue("ActiveStatus","ACTIVE")</defaultvalue>
-                        <persistence type="property" />
+                        <persistence type="property"/>
+                    </attribute>
+                    <attribute qualifier="managerApproval" type="ManagerApproval">
+                        <description>Approval Manager</description>
+                        <modifiers />
+                        <defaultvalue>em().getEnumerationValue("ManagerApproval","APPROVED")</defaultvalue>
+                        <persistence type="property"/>
                     </attribute>
                 </attributes>
             </itemtype>
 
             <itemtype code="Seller" autocreate="true" generate="true">
-                <deployment table="Seller" typecode="11000" />
+                <deployment table="Seller" typecode="11000"/>
                 <attributes>
                     <attribute qualifier="code" type="java.lang.String">
                         <description>Seller Code</description>
@@ -156,9 +168,29 @@
                         <modifiers search="true"/>
                         <persistence type="property"/>
                     </attribute>
+                    <attribute qualifier="location" type="java.lang.String">
+                        <description>Seller location</description>
+                        <modifiers search="true"/>
+                        <persistence type="property"/>
+                    </attribute>
+                    <attribute qualifier="npwp" type="java.lang.String">
+                        <description>Seller NPWP</description>
+                        <modifiers search="true"/>
+                        <persistence type="property"/>
+                    </attribute>
+                </attributes>
+            </itemtype>
+
+            <itemtype code="TestActionProcess"
+                      jaloclass="de.hybris.platform.commerceservices.jalo.process.TestActionProcess"
+                      extends="BusinessProcess">
+                <attributes>
+                    <attribute qualifier="something" type="java.lang.String">
+                        <persistence type="property"/>
+                        <description>something</description>
+                    </attribute>
                 </attributes>
             </itemtype>
         </typegroup>
-
     </itemtypes>
 </items>

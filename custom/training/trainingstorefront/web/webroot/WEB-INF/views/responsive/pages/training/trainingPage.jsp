@@ -32,9 +32,9 @@
             <c:forEach items="${product}" var="product">
                 <div class="training-product-grid col-md-3">
                     <c:url value="${product.url}" var="productUrl" />
-                    <a href="${fn:escapeXml(productUrl)}" class="thumb" title="${fn:escapeXml(product.name)}">
-                        <product:productPrimaryImage product="${product}" format="product"/>
-                    </a>
+                    <%--<a href="${fn:escapeXml(productUrl)}" class="thumb" title="${fn:escapeXml(product.name)}">--%>
+                        <%--<product:productPrimaryImage product="${product}" format="product"/>--%>
+                    <%--</a>--%>
                     <div class="training-label">
                         <p>${product.code}</p>
                         <p>${product.name}</p>
@@ -42,6 +42,7 @@
                     </div>
                 </div>
             </c:forEach>
+            <spring:theme code="training.text.example"/>
         </div>
     </div>
 </template:page>

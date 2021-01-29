@@ -12,20 +12,20 @@ $classCatalogVersion = catalogversion(catalog(id[default='$classificationCatalog
 $classSystemVersion = systemVersion(catalog(id[default='$classificationCatalog']), version[default='1.0'])[unique=true]
 
 # Language
-$lang = en
+$lang = id
 
 # Insert Classifications
 UPDATE ClassificationClass; code[unique = true]; $classCatalogVersion; name[lang = $lang]
-                          ; sizeshirt          ;                     ; Shirt Size
-                          ; sizetrouser        ;                     ; Trouser Size
-                          ; color              ;                     ; Color
+                          ; sizeshirt          ;                     ; Ukuran Baju
+                          ; sizetrouser        ;                     ; Ukuran Celana
+                          ; color              ;                     ; Warna
 
 
 # Insert Classification Attributes
 UPDATE ClassificationAttribute; code[unique = true]; $classSystemVersion; name[lang = $lang]
-                              ; dada               ;                    ; Chest
-                              ; pinggang           ;                    ; Waist
-                              ; panggul            ;                    ; Hip
-                              ; panjang            ;                    ; Inside
-                              ; warna              ;                    ; Color
+                              ; dada               ;                    ; Dada
+                              ; pinggang           ;                    ; Pinggang
+                              ; panggul            ;                    ; Panggul
+                              ; panjang            ;                    ; Panjang
+                              ; warna              ;                    ; Warna
 

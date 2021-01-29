@@ -601,13 +601,13 @@
     <bean id="trainingProductActiveStatusManagerApprovalActionJob" class="org.training.core.workflow.actions.TrainingProductActiveStatusManagerApprovalActionJob">
     </bean>
 
-    <!--<bean id="trainingProductAfterSaveListener" class="org.training.core.listeners.TrainingProductAfterSaveListener">-->
-        <!--<property name="modelService" ref="modelService"/>-->
-        <!--<property name="userService" ref="userService"/>-->
-        <!--<property name="workflowProcessingService" ref="workflowProcessingService"/>-->
-        <!--<property name="workflowService" ref="workflowService"/>-->
-        <!--<property name="workflowTemplateService" ref="workflowTemplateService"/>-->
-        <!--<property name="flexibleSearchService" ref="flexibleSearchService"/>-->
-    <!--</bean>-->
+    <bean id="trainingProductAfterSaveListener" class="org.training.core.listener.TrainingProductAfterSaveListener">
+        <property name="modelService" ref="modelService"/>
+        <property name="userService" ref="userService"/>
+        <property name="workflowProcessingService" ref="workflowProcessingService"/>
+        <property name="workflowService" ref="newestWorkflowService"/>
+        <property name="workflowTemplateService" ref="workflowTemplateService"/>
+        <property name="flexibleSearchService" ref="flexibleSearchService"/>
+    </bean>
 
 </beans>
